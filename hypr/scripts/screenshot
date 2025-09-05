@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+if [[ $1 == rc ]]; then
+grim -g "$(slurp -b '#737373b0' -c '#00000000')" - | wl-copy 
+fi

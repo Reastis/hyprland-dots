@@ -5,37 +5,50 @@ import QtQuick.Controls
 import Quickshell
 import qs.modules.widgets
 Item {
-  id: workspacesRoot 
+  id: workspacesRoot
   property real padding: 10
-  implicitWidth: workspacesList.implicitWidth + padding
+  implicitWidth: workspacesLayout.implicitWidth + padding
   property var workspaces: HyprHandler.workspaces
+  property list<string> workspacesShown: Array.from({ length:10}, (_, i) => `${i+1}`)
   property var focusedWorkspace: HyprHandler.focusedWorkspace 
   property real wsButtonWidth: 25
   property real wsButtonHeight: 25
-
-  Rectangle {
-    x: padding/2 + wsButtonWidth*(focusedWorkspace.id-1)
+  property real contentMargin: 2
+  Connections {
+    target: workspaces
+    function onObjectInsertedPost(addedWorkspace, index){
+      if (!workspacesShown.includes(addedWorkspace.name)){
+      } 
+    }
+  }
+  Rectangle { 
     z:1
     id: activeWorkspaceBg
-    anchors {
-      verticalCenter:parent.verticalCenter
-    }
+    x: padding/2 + wsButtonWidth*(focusedWorkspace?.id-1)
+    anchors.verticalCenter:parent.verticalCenter
     color:"blue"
     implicitWidth:wsButtonWidth
     implicitHeight:wsButtonHeight
     radius:implicitWidth/2
+    Behavior on x {
+      NumberAnimation {
+        duration: 200
+        easing.type: Easing.OutSine
+      }
+    }
   }
   RowLayout {
     z:2
-    id: workspacesList
+    id: workspacesLayout
     anchors.centerIn: parent
     implicitHeight: 30
-    spacing: 0 
+    spacing: 0
     Repeater {
-      model: 10
-
+      id: workspacesList
+      model: workspacesShown
       Button {
         id: workspace
+        required property int index
         implicitWidth:workspacesRoot.wsButtonWidth
         implicitHeight:workspacesRoot.wsButtonHeight
         background: Item {

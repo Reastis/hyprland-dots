@@ -13,8 +13,8 @@ Singleton {
   property HyprlandWorkspace focusedWorkspace: Hyprland.focusedWorkspace
   property HyprlandToplevel activeTopLevel: Hyprland.activeTopLevel
   property HyprlandMonitor focusedMonitor: Hyprland.focusedMonitor
-  
-  Connections {
+
+    Connections {
     target: Hyprland
     function onRawEvent(event: HyprlandEvent) {
       if (event.name.endsWith("v2")){

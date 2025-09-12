@@ -55,6 +55,7 @@ Scope {
         spacing:4
         BarGroup {
           BatteryIndicator{}
+          BluetoothIndicator{}
           NetworkIndicator{}
         }
       }  

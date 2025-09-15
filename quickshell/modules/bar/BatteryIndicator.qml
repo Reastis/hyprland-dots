@@ -18,6 +18,7 @@ Item {
     }
     MaterialSymbol {
       fill: 1
+      Layout.leftMargin: -4
       text: `${Battery.symbolName}`
     }
   }

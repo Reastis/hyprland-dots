@@ -17,7 +17,7 @@ Item {
       rightMargin:contentPadding
       leftMargin:contentPadding
     }
-    color:"red"
+    color:"#CF0F47"
     radius: 10
   }
   RowLayout {

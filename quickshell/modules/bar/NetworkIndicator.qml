@@ -12,6 +12,8 @@ Item {
     id: rowLayout
     anchors.centerIn: parent
     MaterialSymbol {
+      Layout.leftMargin: -2
+      Layout.rightMargin: -2
       text:`${Network.symbolName}`
     } 
   }

@@ -11,9 +11,9 @@ Item {
   property var workspaces: HyprHandler.workspaces
   property list<string> workspacesShown: Array.from({ length:10}, (_, i) => `${i+1}`)
   property var focusedWorkspace: HyprHandler.focusedWorkspace 
-  property real wsButtonWidth: 25
-  property real wsButtonHeight: 25
-  property real contentMargin: 2
+  property real wsButtonWidth: 24
+  property real wsButtonHeight: 24
+  property real contentMargin: 6
   Connections {
     target: workspaces
     function onObjectInsertedPost(addedWorkspace, index){
@@ -24,11 +24,11 @@ Item {
   Rectangle { 
     z:1
     id: activeWorkspaceBg
-    x: padding/2 + wsButtonWidth*(focusedWorkspace?.id-1)
+    x: (padding+contentMargin)/2 + wsButtonWidth*(focusedWorkspace?.id-1)
     anchors.verticalCenter:parent.verticalCenter
-    color:"blue"
-    implicitWidth:wsButtonWidth
-    implicitHeight:wsButtonHeight
+    color:"#EA5B6F"
+    implicitWidth:wsButtonWidth-contentMargin
+    implicitHeight:wsButtonHeight-contentMargin
     radius:implicitWidth/2
     Behavior on x {
       NumberAnimation {
@@ -53,6 +53,7 @@ Item {
         implicitHeight:workspacesRoot.wsButtonHeight
         background: Item {
           id: workspaceBackground
+
           Rectangle {
             anchors.centerIn: parent
             width: 6

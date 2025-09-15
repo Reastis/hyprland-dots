@@ -6,9 +6,14 @@ Scope {
   id: bar
   PanelWindow {
     id: barRoot
-    implicitHeight: 40
+    implicitHeight: 30
     mask: Region {
       item: barContent
+    }
+    margins {
+      top: 3
+      left: 3
+      right: 3
     }
     anchors {
       left: true
@@ -30,7 +35,7 @@ Scope {
         anchors {
           fill: parent
         }
-        color: "gray"
+        color: "transparent"
         radius: 12
       }
       RowLayout {

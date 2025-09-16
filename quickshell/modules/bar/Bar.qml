@@ -39,6 +39,7 @@ Scope {
         radius: 12
       }
       RowLayout {
+        id:barSectionLeft
         implicitHeight:30
         anchors {
           left: parent.left
@@ -51,6 +52,19 @@ Scope {
         }
       }
       RowLayout {
+        id:barSectionCenter
+        implicitHeight:30
+        anchors {
+          horizontalCenter: parent.horizontalCenter
+          top: parent.top
+          bottom: parent.bottom
+        }
+        BarGroup {
+          Clock {}
+        }
+      }
+      RowLayout {
+        id:barSectionRight
         implicitHeight:30
         anchors {
           right: parent.right

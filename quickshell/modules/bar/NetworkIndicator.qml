@@ -5,12 +5,13 @@ import qs.services
 import qs.modules.widgets
 
 Item {
-  id: networkIndicatorRoot
-  implicitWidth:rowLayout.implicitWidth + rowLayout.spacing * 2
+  id: root
+  implicitWidth:content.implicitWidth + content.spacing * 2
   property string networkName: Network.networkStrength
   RowLayout {
-    id: rowLayout
+    id: content
     anchors.centerIn: parent
+    spacing: 4
     MaterialSymbol {
       Layout.leftMargin: -2
       Layout.rightMargin: -2

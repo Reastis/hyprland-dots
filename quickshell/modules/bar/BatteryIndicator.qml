@@ -5,20 +5,20 @@ import qs.modules.widgets
 import Quickshell.Widgets
 import Quickshell
 Item {
-  id: batteryIndicatorRoot
-  implicitWidth: rowLayout.implicitWidth + rowLayout.spacing * 2
+  id: root
+  implicitWidth: content.implicitWidth + content.spacing * 2
   property real percentage: Battery.percentage
   RowLayout {
-    id: rowLayout
+    id: content
     anchors.centerIn: parent
-    spacing: 2
+    spacing: 4
     StyledText {
       verticalAlignment: Text.AlignVCenter
       text: `${Math.round(percentage*100)}%`
     }
     MaterialSymbol {
       fill: 1
-      Layout.leftMargin: -4
+      Layout.leftMargin: -6
       text: `${Battery.symbolName}`
     }
   }

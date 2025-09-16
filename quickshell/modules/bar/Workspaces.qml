@@ -5,7 +5,7 @@ import QtQuick.Controls
 import Quickshell
 import qs.modules.widgets
 Item {
-  id: workspacesRoot
+  id: root
   property real padding: 10
   implicitWidth: workspacesLayout.implicitWidth + padding
   property var workspaces: HyprHandler.workspaces
@@ -49,8 +49,8 @@ Item {
       Button {
         id: workspace
         required property int index
-        implicitWidth:workspacesRoot.wsButtonWidth
-        implicitHeight:workspacesRoot.wsButtonHeight
+        implicitWidth:root.wsButtonWidth
+        implicitHeight:root.wsButtonHeight
         background: Item {
           id: workspaceBackground
 

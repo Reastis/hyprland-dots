@@ -5,7 +5,7 @@ import Quickshell
 Scope {
   id: bar
   PanelWindow {
-    id: barRoot
+    id: root
     implicitHeight: 30
     mask: Region {
       item: barContent
@@ -39,8 +39,8 @@ Scope {
         radius: 12
       }
       RowLayout {
-        id:barSectionLeft
-        implicitHeight:30
+        id: barSectionLeft
+        implicitHeight: 30
         anchors {
           left: parent.left
           top: parent.top
@@ -52,8 +52,8 @@ Scope {
         }
       }
       RowLayout {
-        id:barSectionCenter
-        implicitHeight:30
+        id: barSectionCenter
+        implicitHeight: 30
         anchors {
           horizontalCenter: parent.horizontalCenter
           top: parent.top
@@ -64,7 +64,7 @@ Scope {
         }
       }
       RowLayout {
-        id:barSectionRight
+        id: barSectionRight
         implicitHeight:30
         anchors {
           right: parent.right

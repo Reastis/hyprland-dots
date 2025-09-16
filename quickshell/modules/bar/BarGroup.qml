@@ -3,25 +3,25 @@ import QtQuick.Layouts
 import Quickshell
 
 Item {
-  id: barGroupRoot
+  id: root
   property real contentPadding: 3
   implicitHeight: parent.implicitHeight
-  implicitWidth: rowLayout.implicitWidth + contentPadding * 2
-  default property alias items: rowLayout.children
+  implicitWidth: content.implicitWidth + contentPadding * 2
+  default property alias items: content.children
   Rectangle {
     id: background
     anchors {
       fill: parent
-      topMargin:contentPadding
-      bottomMargin:contentPadding
-      rightMargin:contentPadding
-      leftMargin:contentPadding
+      topMargin: contentPadding
+      bottomMargin: contentPadding
+      rightMargin: contentPadding
+      leftMargin: contentPadding
     }
-    color:"#CF0F47"
+    color: "#CF0F47"
     radius: 10
   }
   RowLayout {
-    id: rowLayout
+    id: content
     anchors {
       verticalCenter: parent.verticalCenter
       left: parent.left
@@ -30,6 +30,5 @@ Item {
       rightMargin: parent.contentPadding
     }
     spacing: 4
-
-  } 
+  }
 }

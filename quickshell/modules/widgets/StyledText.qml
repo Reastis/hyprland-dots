@@ -5,6 +5,7 @@ Text {
   renderType: Text.NativeRendering
   font {
     family: "Roboto"
+    bold:true
   }
   color: "white"
 }

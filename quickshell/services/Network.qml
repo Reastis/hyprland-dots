@@ -6,7 +6,7 @@ import QtQuick
 
 Singleton {
   id:root
-  property bool isConnected: true
+  property bool isConnected: false
   property bool ethernet: false
   property bool wifi: false
   property string networkName: ""
@@ -30,7 +30,7 @@ Singleton {
     running:true
     repeat:true
     onTriggered:{
-      updateNetworkCredentials.running = true
+      updateNetworkConnection.running = true
       updateNetworkName.running = true
       if (root.wifi = true){
         updateNetworkStrength.running = true
@@ -41,25 +41,28 @@ Singleton {
       interval = reloadInterval
     }
   }
-  
+
   Process {
-    id: updateNetworkCredentials
+    id: updateNetworkConnection
     running: true
-    command: ["sh", "-c", "nmcli -t -f NAME,TYPE,DEVICE c show --active"]
-    stdout: SplitParser {
-      onRead: data => {
-        if (data.includes("wireless")) {
-          root.wifi= true
-        }
-        else if (data.includes("ethernet")) {
-          root.ethernet = true
-        }
-        if (root.wifi || root.ethernet) {
-          root.isConnected = true
-        }
+    command: ["sh", "-c", " nmcli -g NAME,TYPE,DEVICE c show --active"]
+    stdout: StdioCollector {
+      onStreamFinished: {
+        let connectedNetworks = text.trim().split('\n').map(conn => {
+          const content = conn.split(":");
+          return {
+            name: content[0],
+            type: content[1],
+            device: content[2],
+          }
+        });
+        root.wifi = connectedNetworks.some(network => network.type.includes("wireless"));
+        root.ethernet = connectedNetworks.some(network => network.type.includes("ethernet"));
+        root.isConnected = root.wifi || root.ethernet? true : false
       }
     }
   }
+
   Process {
     id: updateNetworkName
     running: true

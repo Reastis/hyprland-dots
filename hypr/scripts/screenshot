@@ -1,5 +1,13 @@
 #!/usr/bin/env bash
 
+#r - region; c - clipboard; f - file
 if [[ $1 == rc ]]; then
-grim -g "$(slurp -b '#737373b0' -c '#00000000')" - | wl-copy 
+  grim -g "$(slurp -b '#737373b0' -c '#00000000')" - | wl-copy
+elif [[ $1 == rcf ]]; then
+  scrdir=~/Pictures/Screenshots/
+  mkdir -p $scrdir
+  filename=$(date +"%Y-%m-%d_%H-%M-%S").png
+  if grim -g "$(slurp -b '#737373b0' -c '#00000000')" $scrdir$filename; then
+    wl-copy <$scrdir$filename
+  fi
 fi

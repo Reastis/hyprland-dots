@@ -21,7 +21,7 @@ Singleton {
         symbolName = "bolt";
         break;
       case(charge <= 15):
-        symbolName = "battery_1_bar";
+        symbolName = "battery_alert";
         break;
       case (charge <= 30):
         symbolName = "battery_2_bar";

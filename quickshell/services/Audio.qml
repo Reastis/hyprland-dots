@@ -17,22 +17,22 @@ Singleton {
   }
 
   property PwNodeAudio audioProperties: defaultAudioSink?.audio
-  property string soundSymbolName: "volume_off"
+  property string soundSymbolName: "volume_down"
+  onAudioPropertiesChanged: updateMaterialSymbol ()
 
-  onDefaultAudioSourceChanged: console.log(defaultAudioSink.nickname)
+  function updateMaterialSymbol() {
+    console.log(audioProperties.muted)
+    soundSymbolName = audioProperties.muted? "volume_off" : audioProperties.volume? "volume_up" : "volume_off"
+  }
   Connections {
     target: audioProperties ?? null
     
     function onMutedChanged() {
       soundSymbolName = audioProperties.muted ? "volume_off" :
       !audioProperties.volume ? "volume_off":"volume_up"
-      root.soundSymbolName = soundSymbolName
-
     }
     function onVolumeChanged() {
       soundSymbolName = !audioProperties.volume? "volume_off" : "volume_up"
-      root.soundSymbolName = soundSymbolName
-
     }
   }
 }

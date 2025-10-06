@@ -13,8 +13,8 @@ Item {
     anchors.centerIn: parent
     spacing: 4
     MaterialSymbol {
-      Layout.leftMargin: -2
-      Layout.rightMargin: -2
+      Layout.leftMargin: 0
+      Layout.rightMargin: 0
       text:`${Network.symbolName}`
     } 
   }

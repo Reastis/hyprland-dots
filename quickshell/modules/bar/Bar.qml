@@ -74,10 +74,13 @@ Scope {
         spacing:4
         BarGroup {
           BatteryIndicator{}
+        }
+        BarGroup {
+          VolumeIndicator{}
           BluetoothIndicator{}
           NetworkIndicator{}
         }
-      }  
+      }
     }
   }
 }

@@ -17,7 +17,6 @@ Singleton {
   onConnectedChanged: getSymbolName()
   onSearchingChanged: getSymbolName()
   function getSymbolName() {
-    console.log(devices)
     let symbolName = "";
     switch (enabled) {
       case (false):

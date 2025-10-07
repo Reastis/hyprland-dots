@@ -22,7 +22,6 @@ Singleton {
       networkStrength >= 25? "network_wifi_2_bar" :
       networkStrength != 0? "network_wifi_1_bar": "signal_wifi_0_bar" :
       "cell_tower"
-    root.symbolName = symbolName
   }
 
   Timer {

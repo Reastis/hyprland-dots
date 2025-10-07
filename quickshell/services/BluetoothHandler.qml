@@ -17,7 +17,6 @@ Singleton {
   onConnectedChanged: getSymbolName()
   onSearchingChanged: getSymbolName()
   function getSymbolName() {
-    let symbolName = "";
     switch (enabled) {
       case (false):
         symbolName = "bluetooth_disabled";
@@ -32,6 +31,5 @@ Singleton {
         symbolName = "bluetooth";
         break;
       }
-      root.symbolName = symbolName;
   }
 }

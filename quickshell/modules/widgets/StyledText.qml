@@ -1,11 +1,16 @@
 import QtQuick
 
 Text {
-  verticalAlignment: Text.AlignVCenter
   renderType: Text.NativeRendering
+  height:15
+  verticalAlignment: Text.AlignTop
+  horizontalAlignment: Text.AlignLeft
+
+  property bool isBold: false
   font {
     family: "Roboto"
-    bold: true
+    bold: isBold
+    pixelSize:17
   }
   color: "white"
 }

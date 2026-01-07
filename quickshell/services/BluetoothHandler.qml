@@ -8,7 +8,7 @@ import Quickshell.Io
 
 Singleton {
   id:root
-  property bool enabled: Bluetooth.defaultAdapter?.enabled
+  property bool enabled: Bluetooth.defaultAdapter?.enabled ?? false
   property var devices: Bluetooth.devices
   property bool searching: Bluetooth.adapters.values.some(adapter => adapter.discovering)
   property bool connected: devices.values.some(device => device.connected)

@@ -264,7 +264,7 @@ Item {
               anchors.verticalCenter: parent.verticalCenter
               anchors.horizontalCenter: parent.horizontalCenter
 
-              visible: modelData.name == activeToplevel.workspace.name
+              visible: modelData.name == activeToplevel?.workspace?.name
 
               color: "#EA5B6F"
               implicitWidth: wsButtonWidth-contentMargin

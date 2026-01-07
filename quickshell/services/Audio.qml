@@ -21,7 +21,6 @@ Singleton {
   onAudioPropertiesChanged: updateMaterialSymbol ()
 
   function updateMaterialSymbol() {
-    console.log(audioProperties.muted)
     soundSymbolName = audioProperties.muted? "volume_off" : audioProperties.volume? "volume_up" : "volume_off"
   }
   Connections {

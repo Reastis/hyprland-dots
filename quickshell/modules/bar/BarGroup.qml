@@ -4,7 +4,8 @@ import Quickshell
 
 Item {
   id: root
-  property real contentPadding: 3
+  property real contentPadding: 6
+  property real contentMargin: 3
   implicitHeight: parent.implicitHeight
   implicitWidth: content.implicitWidth + contentPadding * 2
   default property alias items: content.children
@@ -12,10 +13,7 @@ Item {
     id: background
     anchors {
       fill: parent
-      topMargin: contentPadding
-      bottomMargin: contentPadding
-      rightMargin: contentPadding
-      leftMargin: contentPadding
+      margins: contentMargin
     }
     color: "#CF0F47"
     radius: 10
@@ -24,11 +22,8 @@ Item {
     id: content
     anchors {
       verticalCenter: parent.verticalCenter
-      left: parent.left
-      right: parent.right
-      leftMargin: parent.contentPadding
-      rightMargin: parent.contentPadding
+      horizontalCenter: parent.horizontalCenter
     }
-    spacing: 4
+    spacing: 10
   }
 }

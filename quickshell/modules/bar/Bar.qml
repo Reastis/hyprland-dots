@@ -1,12 +1,13 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
-
+import qs.services
 Scope {
   id: bar
+  // property string test: SystemInfo.kbLayout
   PanelWindow {
     id: root
-    implicitHeight: 30
+    implicitHeight: 32
     mask: Region {
       item: barContent
     }
@@ -23,7 +24,7 @@ Scope {
     color: "transparent"
     Item {
       id: barContent
-      implicitHeight: 30
+      implicitHeight: root.implicitHeight
       height: 30
       anchors {
         left: parent.left
@@ -40,7 +41,7 @@ Scope {
       }
       RowLayout {
         id: barSectionLeft
-        implicitHeight: 30
+        implicitHeight: barContent.implicitHeight
         anchors {
           left: parent.left
           top: parent.top
@@ -53,7 +54,7 @@ Scope {
       }
       RowLayout {
         id: barSectionCenter
-        implicitHeight: 30
+        implicitHeight: barContent.implicitHeight
         anchors {
           horizontalCenter: parent.horizontalCenter
           top: parent.top
@@ -65,7 +66,7 @@ Scope {
       }
       RowLayout {
         id: barSectionRight
-        implicitHeight:30
+        implicitHeight:barContent.implicitHeight
         anchors {
           right: parent.right
           top: parent.top
@@ -77,6 +78,7 @@ Scope {
         }
         BarGroup {
           VolumeIndicator{}
+          LanguageIndicator{}
           BluetoothIndicator{}
           NetworkIndicator{}
         }

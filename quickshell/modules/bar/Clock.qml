@@ -5,12 +5,11 @@ import QtQuick.Layouts
 
 Item {
   id: root
-  implicitWidth: content.implicitWidth + content.spacing * 2
+  implicitWidth: content.implicitWidth
   RowLayout {
     id: content
     anchors.centerIn: parent
-    spacing: 4
-    StyledText{
+    StyledText {
       text: DateTime.time
     }
   }

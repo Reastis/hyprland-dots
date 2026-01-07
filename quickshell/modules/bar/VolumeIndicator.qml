@@ -1,23 +1,21 @@
 import QtQuick
 import QtQuick.Layouts
-import qs.services
 import qs.modules.widgets
-import Quickshell.Widgets
+import qs.services
 import Quickshell
+
 Item {
   id: root
   implicitWidth: content.implicitWidth
-  property real percentage: Battery.percentage
   RowLayout {
     id: content
     anchors.centerIn: parent
-    spacing: 0
-    StyledText {
-      text: `${Math.round(percentage*100)}%`
-    }
     MaterialSymbol {
+      id: symbol
       fill: 1
-      text: `${Battery.symbolName}`
+      Layout.leftMargin: 0
+      Layout.rightMargin: 0
+      text: `${Audio.soundSymbolName}`
     }
   }
 }

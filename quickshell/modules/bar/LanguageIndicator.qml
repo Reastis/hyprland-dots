@@ -9,10 +9,10 @@ Item {
   property string kbLayout: SystemInfo.kbLayout
   RowLayout{
     id: content
-    anchors.centerIn:parent
+    anchors.centerIn: parent
     StyledText {
       Layout.preferredWidth: 30
-      Layout.alignment:Layout.AlignVCenter
+      Layout.alignment: Layout.AlignVCenter
       text: kbLayout
       isBold: true
     }

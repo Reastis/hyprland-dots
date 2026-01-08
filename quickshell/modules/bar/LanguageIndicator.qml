@@ -12,7 +12,7 @@ Item {
     anchors.centerIn: parent
     StyledText {
       Layout.preferredWidth: 30
-      Layout.alignment: Layout.AlignVCenter
+      horizontalAlignment: Text.AlignHCenter
       text: kbLayout
       isBold: true
     }

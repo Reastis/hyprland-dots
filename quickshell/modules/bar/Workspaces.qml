@@ -6,7 +6,7 @@ import Quickshell
 import qs.modules.widgets
 Item {
   id: root
-  property real padding: 4
+  property real padding: 0
   implicitWidth: workspacesLayout.implicitWidth + padding
 
   property var occupiedWorkspaces: HyprHandler.occupiedWorkspaces

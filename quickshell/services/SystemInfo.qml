@@ -33,7 +33,6 @@ Singleton {
     function onRawEvent(event: HyprlandEvent) {
       if (event.name == "activelayout") {
         updateKbLayout.running = true
-        console.log("Layout change")
       }
     }
   }

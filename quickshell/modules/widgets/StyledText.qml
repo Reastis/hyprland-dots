@@ -10,7 +10,7 @@ Text {
   font {
     family: "Roboto"
     bold: isBold
-    pixelSize:17
+    pixelSize:16
   }
   color: "white"
 }

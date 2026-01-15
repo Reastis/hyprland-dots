@@ -7,7 +7,7 @@ import Quickshell.Services.UPower
 Singleton {
   id: root
   property bool available: UPower.displayDevice.isLaptopBattery
-  property bool isCharging: UPower.displayDevice.state == UPowerDeviceState.Charging
+  property bool isCharging: !UPower.onBattery
   property real percentage: UPower.displayDevice.percentage
   property string symbolName: "battery_unknown"
   onIsChargingChanged: getSymbolName()
@@ -15,7 +15,7 @@ Singleton {
   function getSymbolName() {
     let charge = Math.round(percentage*100)
     let symbolName = ""
-    switch (!isCharging) 
+    switch (!isCharging)
     {
       case (false):
         symbolName = "bolt";

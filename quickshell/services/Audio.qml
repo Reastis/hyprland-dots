@@ -21,17 +21,17 @@ Singleton {
   onAudioPropertiesChanged: updateMaterialSymbol ()
 
   function updateMaterialSymbol() {
-    soundSymbolName = audioProperties.muted? "volume_off" : audioProperties.volume? "volume_up" : "volume_off"
+    soundSymbolName = audioProperties?.muted? "volume_off" : audioProperties?.volume? "volume_up" : "volume_off"
   }
   Connections {
     target: audioProperties ?? null
     
     function onMutedChanged() {
-      soundSymbolName = audioProperties.muted ? "volume_off" :
+      soundSymbolName = audioProperties?.muted ? "volume_off" :
       !audioProperties.volume ? "volume_off":"volume_up"
     }
     function onVolumeChanged() {
-      soundSymbolName = !audioProperties.volume? "volume_off" : "volume_up"
+      soundSymbolName = !audioProperties?.volume? "volume_off" : "volume_up"
     }
   }
 }

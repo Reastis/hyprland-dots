@@ -52,7 +52,8 @@ Item {
           id: summary
           Layout.preferredWidth: parent.width - appIconImage.implicitSize - contentMargins * 2
           height: parent.implicitHeight
-          font.pixelSize: 18
+          fontPixelSize: 18
+          fontFamily: "Roboto"
           text: notifObject?.summary ?? notifObject?.appName
           elide: Text.ElideRight
         }
@@ -84,7 +85,8 @@ Item {
             id: message
             property var notif: modelData
             width: parent.width
-            font.pixelSize: 16
+            fontFamily: "Roboto"
+            fontPixelSize: 16
             text: modelData.body
             wrapMode: Text.Wrap
             elide: Text.ElideRight

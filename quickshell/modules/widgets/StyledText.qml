@@ -6,11 +6,13 @@ Text {
   verticalAlignment: Text.AlignTop
   horizontalAlignment: Text.AlignLeft
 
+  property string fontFamily: "Roboto Mono"
+  property real fontPixelSize: 16
   property bool isBold: false
   font {
-    family: "Roboto"
+    family: fontFamily
     bold: isBold
-    pixelSize:16
+    pixelSize:fontPixelSize
   }
   color: "white"
 }

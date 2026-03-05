@@ -74,6 +74,9 @@ Scope {
         }
         spacing:4
         BarGroup {
+          SysTrayIndicator{}
+        }
+        BarGroup {
           BatteryIndicator{}
         }
         BarGroup {

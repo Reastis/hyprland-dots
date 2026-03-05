@@ -9,6 +9,7 @@ Item {
   implicitHeight: parent.implicitHeight
   implicitWidth: content.implicitWidth + contentPadding * 2
   default property alias items: content.children
+  opacity: items.some((item) => item.opacity > 0)? 1 : 0
   Rectangle {
     id: background
     anchors {

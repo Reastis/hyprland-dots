@@ -75,7 +75,7 @@ Singleton {
   Process {
     id: updateNetworkStrength
     running: true
-    command: ["sh", "-c", "nmcli -f IN-USE,SIGNAL device wifi|awk '/^\*/{print $2}' "]
+    command: ["sh", "-c", "nmcli -t -f IN-USE,SIGNAL device wifi|awk -F: '/^\\*:/{ print $2}'"]
     stdout: SplitParser {
       onRead: data => {
         networkStrength = parseInt(data);

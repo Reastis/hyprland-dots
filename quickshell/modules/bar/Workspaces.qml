@@ -148,9 +148,10 @@ Item {
       id: occupiedWorkspacesLayout
       spacing: 0
 
+      
       add: Transition {
         NumberAnimation {
-          property: "opacity"
+          properties: "opacity"
           from:0
           to:1
           easing.type: Easing.InOutQuad
@@ -161,10 +162,20 @@ Item {
           easing.type: Easing.OutBack
         }
       }
+      
+      // move: Transition {
+      //   NumberAnimation {
+      //     property: "x"
+      //     duration: 200
+      //     easing.type:Easing.OutQuad
+      //   }
+      // }
 
       Repeater {
         id: occupiedWorkspacesList
-        model: occupiedWorkspaces
+        model: ScriptModel {
+          values: occupiedWorkspaces
+        }
         Button {
           id: occupiedWorkspace
           required property var modelData
@@ -249,7 +260,7 @@ Item {
           easing.type: Easing.OutBack
         }
       }
-      
+
       Repeater {
         id: occupiedSpecialWorkspacesList
         model: occupiedSpecialWorkspaces
@@ -270,12 +281,6 @@ Item {
               implicitWidth: wsButtonWidth-contentMargin
               implicitHeight: wsButtonHeight-contentMargin
               radius: implicitWidth/3
-              Behavior on x {
-                NumberAnimation {
-                  duration: 200
-                  easing.type: Easing.OutSine
-                }
-              }
             }
 
             StyledText {
@@ -284,7 +289,6 @@ Item {
               verticalAlignment: Text.AlignVCenter
               horizontalAlignment: Text.AlignHCenter
               text: `${modelData.name.replace("special:", "")[0].toUpperCase()}`
-
             }
           }
         }

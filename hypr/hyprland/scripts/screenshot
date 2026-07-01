@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+#r - region; c - clipboard; f - file
+if [[ $1 == rc ]]; then
+  grim -g "$(slurp -b '#737373b0' -c '#00000000')" - | wl-copy
+  notify-send "Hyprland config" "Screenshot copied to clipboard"
+elif [[ $1 == rcf ]]; then
+  scrdir=~/Pictures/Screenshots/
+  mkdir -p $scrdir
+  filename=$(date + "%Y-%m-%d_%H-%M-%S").png
+  if grim -g "$(slurp -b '#737373b0' -c '#00000000')" $scrdir$filename; then
+    wl-copy <$scrdir$filename
+    notify-send "Hyprland config" "Screenshot copied to clipboard and saved"
+  fi
+elif [[ $1 == c ]]; then
+  grim - | wl-copy
+  notify-send "Hyprland config" "Screenshot copied to clipboard"
+elif [[ $1 == cf ]]; then
+  scrdir=~/Pictures/Screenshots/
+  mkdir -p $scrdir
+  filename=$(date + "%Y-%m-%d_%H-%M-%S").png
+  if grim $scrdir$filename; then
+    wl-copy <$scrdir$filename
+    notify-send "Hyprland config" "Screenshot copied to clipboard and saved"
+  fi
+fi

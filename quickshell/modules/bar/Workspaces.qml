@@ -1,13 +1,23 @@
-import qs.services
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls
 import Quickshell
 import qs.modules.widgets
+import qs.services
+import qs.common
+
 Item {
   id: root
+
+  required property bool isHorizontal
+
   property real padding: 0
-  implicitWidth: workspacesLayout.implicitWidth + padding
+  property real wsButtonWidth: 26
+  property real wsButtonHeight: 26
+  property real contentMargin: 4
+
+  implicitWidth: wsLayoutLoader.item?.implicitWidth  // horizontalWorkspacesLayout + padding
+  implicitHeight: wsLayoutLoader.item?.implicitHeight + padding
 
   property var occupiedWorkspaces: HyprHandler.occupiedWorkspaces
   property var occupiedSpecialWorkspaces: HyprHandler.occupiedSpecialWorkspaces
@@ -17,278 +27,567 @@ Item {
   property var activeToplevel: HyprHandler.activeToplevel
 
   property bool focusIsOccupied: occupiedWorkspaces.includes(focusedWorkspace)? true : false
-  property real wsButtonWidth: 24
-  property real wsButtonHeight: 24
-  property real contentMargin: 4
-  
+
   // Workspace marker
   Rectangle {
-    z:1
-    id: activeWorkspaceBg
-    x: (padding+contentMargin)/2 + wsButtonWidth*Math.max(occupiedWorkspaces.indexOf(focusedWorkspace), 0) 
-    anchors.verticalCenter: parent.verticalCenter
-    color: "#EA5B6F"
-    implicitWidth: wsButtonWidth-contentMargin
-    implicitHeight: wsButtonHeight-contentMargin
-    radius: implicitHeight/3
+    z: 1
+    id: activeWsBg
+    x: isHorizontal? (padding+contentMargin)/2 + wsButtonWidth * Math.max(occupiedWorkspaces.indexOf(focusedWorkspace), 0) : contentMargin / 2
+    y: !isHorizontal? (padding+contentMargin)/2 + wsButtonHeight * Math.max(occupiedWorkspaces.indexOf(focusedWorkspace), 0) : contentMargin / 2
+    color: Appearance.colorScheme.cPrimary
+    implicitWidth: wsButtonWidth - contentMargin
+    implicitHeight: wsButtonHeight - contentMargin
+    radius: implicitHeight / 3
     Behavior on x {
       NumberAnimation {
-        duration: 200
+        duration: Appearance.animations.delaySwift
+        easing.type: Easing.OutSine
+      }
+    }
+    Behavior on y {
+      NumberAnimation {
+        duration: Appearance.animations.delaySwift
         easing.type: Easing.OutSine
       }
     }
   }
 
-  // EmptyWorkspace | Occupied Workspaces | Special Workspaces
-  Row {
-    id: workspacesLayout
-    z:2
-    anchors.centerIn: parent
-    spacing: contentMargin
+  Loader {
+    z: 2
+    id: wsLayoutLoader
+    anchors.fill: parent
+    sourceComponent: isHorizontal? horizontalLayout : verticalLayout
+  }
 
-    Button {
-      id: emptyWorkspace
-      implicitWidth: 0
-      implicitHeight: root.wsButtonHeight
-      background: Item {
-        id: workspaceBackground
-        StyledText {
-          anchors.verticalCenter: parent.verticalCenter
-          anchors.horizontalCenter: parent.horizontalCenter
-          verticalAlignment: Text.AlignVCenter
-          horizontalAlignment: Text.AlignHCenter
-          text: focusedWorkspace?.id > 0? focusedWorkspace.name : 's'
-        }
-      }
+  Component {
+    id: horizontalLayout
 
-      state: !focusIsOccupied? (occupiedWorkspaces?.length != 0? "visible" : "transitive") : "hidden"
-      states: [
-        State {
-          name: "visible"
-          PropertyChanges { target: emptyWorkspace; opacity: 1; width: root.wsButtonWidth; visible: true }
-        },
-        State {
-          name: "hidden"
-          PropertyChanges { target: emptyWorkspace; opacity: 0; width: 0; visible: false }
-        },
-        State {
-          name: "transitive"
-          PropertyChanges { target: emptyWorkspace; opacity: 1; width: root.wsButtonWidth; visible: true}
-        }
-      ]
-      transitions: [
-        Transition {
-          from: "visible"
-          to: "hidden"
-          SequentialAnimation {
-            NumberAnimation { properties: "width, opacity"; duration:100 }
-            PropertyAction { property: "visible" }
-          }
-        },
-        Transition {
-          from: "hidden"
-          to: "visible"
-          SequentialAnimation {
-            PropertyAction { property: "visible" }
-            NumberAnimation { properties: "width, opacity"; duration:100 }
-          }
-        },
-        Transition {
-          from: "transitive"
-          to: "hidden"
-          PropertyAction { properties: "visible" }
-        },
-        Transition {
-          from: "hidden"
-          to: "transitive"
-          PropertyAction { properties: "opacity, width, visible" }
-        }
-      ]
-    }
-    Rectangle {
-      id: emptyWsSeparator
-      anchors.verticalCenter: parent.verticalCenter
-      color: "white"
-      implicitWidth: 1
-      implicitHeight: 20
-      state: !focusIsOccupied && occupiedWorkspaces?.length > 0? "visible" : "hidden"
-      states: [
-        State {
-          name: "visible"
-          PropertyChanges { target:emptyWsSeparator; opacity: 1; width: 1; visible: true}
-        },
-        State {
-          name: "hidden"
-          PropertyChanges { target:emptyWsSeparator; opacity: 0; width: 0; visible: false}
-        }
-      ]
-      transitions: [
-        Transition {
-          from: "visible"
-          to: "hidden"
-          SequentialAnimation {
-            NumberAnimation { property: "width, opacity"; duration:300 }
-            PropertyAction { property: "visible" }
-          }
-        },
-        Transition {
-          from: "hidden"
-          to: "visible"
-          SequentialAnimation {
-            PropertyAction { property: "visible" }
-            NumberAnimation { property: "width, opacity"; duration:300 }
-          }
-        }
-      ]
-    }
-
-    // Occupied workspaces row
+    // EmptyWorkspace | Occupied Workspaces | Special Workspaces
     Row {
-      z:2
-      id: occupiedWorkspacesLayout
-      spacing: 0
+      id: horizontalWsLayout
+      z: 2
+      anchors.centerIn: parent
+      spacing: contentMargin
+      Button {
+        id: emptyWsHorizontal
+        implicitWidth: 0
+        implicitHeight: root.wsButtonHeight
 
-      
-      add: Transition {
-        NumberAnimation {
-          properties: "opacity"
-          from:0
-          to:1
-          easing.type: Easing.InOutQuad
+        property bool shouldTransition: false
+
+        background: Item {
+          id: wsBackground
+          StyledText {
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            color: Appearance.colorScheme.cOnPrimary
+            text: focusedWorkspace?.id > 0 && !focusIsOccupied? focusedWorkspace.name : ''
+          }
         }
-        NumberAnimation {
-          properties: "x, y"
-          duration: 400
-          easing.type: Easing.OutBack
-        }
+
+        state: !focusIsOccupied? "visible" : "hidden"
+        states: [
+          State {
+            name: "visible"
+            PropertyChanges { target: emptyWsHorizontal; opacity: 1; width: root.wsButtonWidth; shouldTransition: true; visible: true }
+          },
+          State {
+            name: "hidden"
+            PropertyChanges { target: emptyWsHorizontal; opacity: 0; width: 0; shouldTransition: true }
+          },
+        ]
+        transitions: [
+          Transition {
+            from: "visible"
+            to: "hidden"
+            enabled: emptyWsHorizontal.shouldTransition && occupiedWorkspaces?.length != 0? true : false
+            SequentialAnimation {
+              NumberAnimation { properties: "width, opacity"; duration: Appearance.animations.delaySwifter }
+              PropertyAction { properties: "visible, shouldTransition" }
+            }
+          },
+          Transition {
+            from: "hidden"
+            to: "visible"
+            enabled: emptyWsHorizontal.shouldTransition? true : false
+            SequentialAnimation {
+              PropertyAction { properties: "visible, shouldTransition" }
+              NumberAnimation { properties: "width, opacity"; duration: Appearance.animations.delaySwifter }
+            }
+          },
+      ]
       }
-      
-      // move: Transition {
-      //   NumberAnimation {
-      //     property: "x"
-      //     duration: 200
-      //     easing.type:Easing.OutQuad
-      //   }
-      // }
+      Rectangle {
+        id: emptyWsSeparatorH
+        anchors.verticalCenter: parent.verticalCenter
+        color: Appearance.colorScheme.cOnSurface
+        implicitWidth: 1
+        implicitHeight: 20
 
-      Repeater {
-        id: occupiedWorkspacesList
-        model: ScriptModel {
-          values: occupiedWorkspaces
-        }
-        Button {
-          id: occupiedWorkspace
-          required property var modelData
+        state: !focusIsOccupied && occupiedWorkspaces?.length > 0? "visible" : "hidden"
 
-          implicitWidth: root.wsButtonWidth
-          implicitHeight: root.wsButtonHeight
-
-          background: Item {
-            id: workspaceBackground
-            StyledText {
-              anchors.verticalCenter: parent.verticalCenter
-              anchors.horizontalCenter: parent.horizontalCenter
-              verticalAlignment: Text.AlignVCenter
-              horizontalAlignment: Text.AlignHCenter
-              text: modelData.id > 0? modelData.name : 'Ex'
+        states: [
+          State {
+            name: "visible"
+            PropertyChanges { target: emptyWsSeparatorH; opacity: 1; width: 1; visible: true}
+          },
+          State {
+            name: "hidden"
+            PropertyChanges { target: emptyWsSeparatorH; opacity: 0; width: 0; visible: false}
+          }
+        ]
+        transitions: [
+          Transition {
+            from: "visible"
+            to: "hidden"
+            enabled: emptyWsHorizontal.shouldTransition && occupiedWorkspaces?.length != 0? true : false
+            SequentialAnimation {
+              NumberAnimation { property: "width, opacity"; duration: Appearance.animations.delayNormal }
+              PropertyAction { property: "visible" }
+            }
+          },
+          Transition {
+            from: "hidden"
+            to: "visible"
+            SequentialAnimation {
+              PropertyAction { property: "visible" }
+              NumberAnimation { property: "width, opacity"; duration: Appearance.animations.delayNormal }
             }
           }
-          Component.onCompleted: {
-            Layout.preferredWidth = implicitWidth
-          }
-        }
-      }
-    }
-
-
-    Rectangle {
-      id: specialWsSeparator
-
-      anchors.verticalCenter: parent.verticalCenter
-      color: "white"
-      
-      implicitWidth: 1
-      implicitHeight: 20
-      
-      state: occupiedSpecialWorkspaces?.length > 0? "visible" : "hidden"
-      states: [
-        State {
-          name: "visible"
-          PropertyChanges { target:specialWsSeparator; opacity: 1; width: 1; visible: true}
-        },
-        State {
-          name: "hidden"
-          PropertyChanges { target:specialWsSeparator; opacity: 0; width: 0; visible: false}
-        }
-      ]
-      transitions: [
-        Transition {
-          from: "visible"
-          to: "hidden"
-          SequentialAnimation {
-            NumberAnimation { property: "width, opacity"; duration:300 }
-            PropertyAction { property: "visible" }
-          }
-        },
-        Transition {
-          from: "hidden"
-          to: "visible"
-          SequentialAnimation {
-            PropertyAction { property: "visible" }
-            NumberAnimation { property: "width, opacity"; duration:300 }
-          }
-        }
-      ]
-    }
-
-  //Special workspaces row
-    Row {
-      z:2
-      id: occupiedSpecialWorkspacesLayout
-      spacing: 0
-
-      add: Transition {
-        NumberAnimation {
-          property: "opacity"
-          from:0
-          to:1
-          easing.type:Easing.InOutQuad
-        }
-        NumberAnimation {
-          properties: "x, y"
-          duration: 400
-          easing.type: Easing.OutBack
-        }
+        ]
       }
 
-      Repeater {
-        id: occupiedSpecialWorkspacesList
-        model: occupiedSpecialWorkspaces
-        Button {
-          id: occupiedSpecialWorkspace
-          required property var modelData
-          implicitWidth: root.wsButtonWidth
-          implicitHeight: root.wsButtonHeight
-          background: Item {
-            id: workspaceBackground
-            Rectangle {
-              anchors.verticalCenter: parent.verticalCenter
-              anchors.horizontalCenter: parent.horizontalCenter
+      // Occupied workspaces row
+      Row {
+        z: 2
+        id: occupiedWsH
+        spacing: 0
 
-              visible: modelData.name == activeToplevel?.workspace?.name
 
-              color: "#EA5B6F"
-              implicitWidth: wsButtonWidth-contentMargin
-              implicitHeight: wsButtonHeight-contentMargin
-              radius: implicitWidth/3
+        add: Transition {
+          NumberAnimation {
+            properties: "opacity"
+            from: 0
+            to: 1
+            easing.type: Easing.InOutQuad
+          }
+          NumberAnimation {
+            properties: "x, y"
+            duration: Appearance.animations.delaySlow
+            easing.type: Easing.OutBack
+          }
+        }
+
+        Behavior on width {
+          NumberAnimation {
+            properties: "width"
+            duration: Appearance.animations.delaySlow
+          }
+        }
+        Repeater {
+          id: occupiedWsListH
+          model: ScriptModel {
+            values: occupiedWorkspaces
+          }
+          onItemAdded: () => {
+            emptyWsHorizontal.shouldTransition = occupiedWorkspaces?.length == 1?  true : false;
+          }
+          onItemRemoved: () => {
+            emptyWsHorizontal.shouldTransition = false;
+          }
+          Button {
+            id: occupiedWs
+            required property var modelData
+
+            implicitWidth: root.wsButtonWidth
+            implicitHeight: root.wsButtonHeight
+
+            background: Item {
+              id: wsBackground
+              StyledText {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: modelData.id > 0? modelData.name : 'Ex'
+
+                color: focusedWorkspace == modelData? Appearance.colorScheme.cOnPrimary : Appearance.colorScheme.cOnSurface
+                Behavior on color {
+                  ColorAnimation {
+                    duration: Appearance.animations.delaySwifter
+                    easing.type: Easing.InOutQuad
+                  }
+                }
+              }
             }
+          }
+        }
+      }
 
-            StyledText {
-              anchors.verticalCenter: parent.verticalCenter
-              anchors.horizontalCenter: parent.horizontalCenter
-              verticalAlignment: Text.AlignVCenter
-              horizontalAlignment: Text.AlignHCenter
-              text: `${modelData.name.replace("special:", "")[0].toUpperCase()}`
+      Rectangle {
+        id: specialWsSeparatorH
+
+        anchors.verticalCenter: parent.verticalCenter
+        color: Appearance.colorScheme.cOnSurface
+
+        implicitWidth: 0
+        implicitHeight: 20
+ 
+        state: occupiedSpecialWorkspaces?.length > 0? "visible" : "hidden"
+        states: [
+          State {
+            name: "visible"
+            PropertyChanges { target: specialWsSeparatorH; opacity: 1; width: 1; visible: true}
+          },
+          State {
+            name: "hidden"
+            PropertyChanges { target: specialWsSeparatorH; opacity: 0; width: 0; visible: false}
+          }
+        ]
+        transitions: [
+          Transition {
+            from: "visible"
+            to: "hidden"
+            SequentialAnimation {
+              NumberAnimation { property: "width, opacity"; duration: Appearance.animations.delayNormal }
+              PropertyAction { property: "visible" }
+            }
+          },
+          Transition {
+            from: "hidden"
+            to: "visible"
+            SequentialAnimation {
+              PropertyAction { property: "visible" }
+              NumberAnimation { property: "width, opacity"; duration: Appearance.animations.delayNormal }
+            }
+          }
+        ]
+      }
+
+    //Special workspaces row
+      Row {
+        z: 2
+        id: occupiedSpecialWsLayoutH
+        spacing: 0
+
+        add: Transition {
+          NumberAnimation {
+            property: "opacity"
+            from: 0
+            to: 1
+            easing.type: Easing.InOutQuad
+          }
+        }
+
+        Repeater {
+          id: occupiedSpecialWsListH
+          model: occupiedSpecialWorkspaces
+          Button {
+            id: occupiedSpecialWsH
+            required property var modelData
+            property bool isActive: modelData.name == activeToplevel?.workspace?.name
+            implicitWidth: root.wsButtonWidth
+            implicitHeight: root.wsButtonHeight
+            background: Item {
+              id: wsBackground
+              Rectangle {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                opacity: isActive? 1 : 0
+
+                color: Appearance.colorScheme.cPrimary
+                implicitWidth: wsButtonWidth-contentMargin
+                implicitHeight: wsButtonHeight-contentMargin
+                radius: implicitWidth/3
+
+                Behavior on opacity {
+                  NumberAnimation {
+                    duration: Appearance.animations.delaySwift
+                    easing.type: Easing.InOutQuad
+                  }
+                }
+              }
+
+              StyledText {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: `${modelData.name.replace("special:", "")[0].toUpperCase()}`
+
+                color: isActive? Appearance.colorScheme.cOnPrimary : Appearance.colorScheme.cOnSurface
+                Behavior on color {
+                  ColorAnimation {
+                    duration: Appearance.animations.delaySwift
+                    easing.type: Easing.InOutQuad
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  Component {
+    id: verticalLayout
+    Column {
+    id: verticalWsLayout
+      z: 2
+      spacing: contentMargin
+      anchors.centerIn: parent
+
+      Button {
+        id: emptyWsVertical
+        implicitWidth: root.wsButtonWidth
+        implicitHeight: root.wsButtonHeight
+
+        property bool shouldTransition: false
+
+        background: Item {
+          id: wsBackground
+          StyledText {
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.horizontalCenter: parent.horizontalCenter
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            text: focusedWorkspace?.id > 0 && !focusIsOccupied? focusedWorkspace.name : ''
+            color: Appearance.colorScheme.cOnPrimary
+          }
+        }
+
+        state: !focusIsOccupied? "visible" : "hidden"
+        states: [
+          State {
+            name: "visible"
+            PropertyChanges { target: emptyWsVertical; opacity: 1; height: root.wsButtonHeight; shouldTransition: true; visible: true }
+          },
+          State {
+            name: "hidden"
+            PropertyChanges { target: emptyWsVertical; opacity: 0; height: 0; shouldTransition: true; }
+          },
+        ]
+        transitions: [
+          Transition {
+            from: "visible"
+            to: "hidden"
+            enabled: emptyWsVertical.shouldTransition && occupiedWorkspaces?.length != 0? true : false
+            SequentialAnimation {
+              NumberAnimation { properties: "height, opacity"; duration: Appearance.animations.delaySwifter }
+              PropertyAction { properties: "visible, shouldTransition" }
+            }
+          },
+          Transition {
+            from: "hidden"
+            to: "visible"
+            enabled: emptyWsVertical.shouldTransition? true : false
+            SequentialAnimation {
+              PropertyAction { properties: "visible, shouldTransition" }
+              NumberAnimation { properties: "height, opacity"; duration: Appearance.animations.delaySwifter }
+            }
+          },
+        ]
+      }
+
+      Rectangle {
+        id: emptyWsSeparatorV
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: Appearance.colorScheme.cOnSurface
+        implicitWidth: 25
+        implicitHeight: 1
+        state: !focusIsOccupied && occupiedWorkspaces?.length > 0? "visible" : "hidden"
+        states: [
+          State {
+            name: "visible"
+            PropertyChanges { target: emptyWsSeparatorV; opacity: 1; height: 1; visible: true}
+          },
+          State {
+            name: "hidden"
+            PropertyChanges { target: emptyWsSeparatorV; opacity: 0; height: 0; visible: false}
+          }
+        ]
+        transitions: [
+          Transition {
+            from: "visible"
+            to: "hidden"
+            enabled: emptyWsVertical.shouldTransition && occupiedWorkspaces?.length != 0? true : false
+            SequentialAnimation {
+              NumberAnimation { property: "height, opacity"; duration: Appearance.animations.delayNormal }
+              PropertyAction { property: "visible" }
+            }
+          },
+          Transition {
+            from: "hidden"
+            to: "visible"
+            SequentialAnimation {
+              PropertyAction { property: "visible" }
+              NumberAnimation { property: "width, opacity"; duration: Appearance.animations.delayNormal }
+            }
+          }
+        ]
+      }
+
+      Column {
+        z: 2
+        id: occupiedWsVertical
+        spacing: 0
+
+        add: Transition {
+          NumberAnimation {
+            properties: "opacity"
+            from: 0
+            to: 1
+            easing.type: Easing.InOutQuad
+          }
+          NumberAnimation {
+            properties: "x, y"
+            duration: Appearance.animations.delaySlow
+            easing.type: Easing.OutBack
+          }
+        }
+
+        Repeater {
+          id: occupiedWsListV
+          model: ScriptModel {
+            values: occupiedWorkspaces
+          }
+          onItemAdded: () => {
+            emptyWsVertical.shouldTransition = occupiedWorkspaces?.length != 1?  true : false;
+          }
+          onItemRemoved: () => {
+            emptyWsVertical.shouldTransition = false;
+          }
+          Button {
+            id: occupiedWs
+            required property var modelData
+
+            implicitWidth: root.wsButtonWidth
+            implicitHeight: root.wsButtonHeight
+
+            background: Item {
+              id: wsBackground
+              StyledText {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+                text: modelData.id > 0? modelData.name : 'Ex'
+                color: focusedWorkspace == modelData? Appearance.colorScheme.cOnPrimary : Appearance.colorScheme.cOnSurface
+                Behavior on color {
+                  ColorAnimation {
+                    duration: Appearance.animations.delaySwifter
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      Rectangle {
+        id: specialWsSeparatorV
+
+        anchors.horizontalCenter: parent.horizontalCenter
+        color: Appearance.colorScheme.cOnSurface
+
+        implicitWidth: 25
+        implicitHeight: 1
+
+        state: occupiedSpecialWorkspaces?.length > 0? "visible" : "hidden"
+        states: [
+          State {
+            name: "visible"
+            PropertyChanges { target: specialWsSeparatorV; opacity: 1; height: 1; visible: true}
+          },
+          State {
+            name: "hidden"
+            PropertyChanges { target: specialWsSeparatorV; opacity: 0; height: 0; visible: false}
+          }
+        ]
+        transitions: [
+          Transition {
+            from: "visible"
+            to: "hidden"
+            SequentialAnimation {
+              NumberAnimation { property: "height, opacity"; duration: Appearance.animations.delayNormal }
+              PropertyAction { property: "visible" }
+            }
+          },
+          Transition {
+            from: "hidden"
+            to: "visible"
+            SequentialAnimation {
+              PropertyAction { property: "visible" }
+              NumberAnimation { property: "height, opacity"; duration: Appearance.animations.delayNormal }
+            }
+          }
+        ]
+      }
+
+      Column {
+        z: 2
+        id: occupiedSpecialWsLayoutV
+        spacing: 0
+
+        add: Transition {
+          NumberAnimation {
+            property: "opacity"
+            from: 0
+            to: 1
+            easing.type: Easing.InOutQuad
+          }
+        }
+
+        Repeater {
+          id: occupiedSpecialWsListV
+          model: occupiedSpecialWorkspaces
+          Button {
+            id: occupiedSpecialWsV
+            required property var modelData
+            property bool isActive: modelData.name == activeToplevel?.workspace?.name
+            implicitWidth: root.wsButtonWidth
+            implicitHeight: root.wsButtonHeight
+            background: Item {
+              id: wsBackground
+              Rectangle {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+
+                opacity: isActive? 1 : 0
+
+                Behavior on opacity {
+                  NumberAnimation {
+                    duration: Appearance.animations.delaySwift
+                    easing.type: Easing.InOutQuad
+                  }
+                }
+
+                color: Appearance.colorScheme.cPrimary
+                implicitWidth: wsButtonWidth-contentMargin
+                implicitHeight: wsButtonHeight-contentMargin
+                radius: implicitWidth/3
+              }
+
+              StyledText {
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.horizontalCenter: parent.horizontalCenter
+                verticalAlignment: Text.AlignVCenter
+                horizontalAlignment: Text.AlignHCenter
+
+                text: `${modelData.name.replace("special:", "")[0].toUpperCase()}`
+
+                color: isActive? Appearance.colorScheme.cOnPrimary : Appearance.colorScheme.cOnSurface
+                Behavior on color {
+                  ColorAnimation {
+                    duration: Appearance.animations.delaySwift
+                    easing.type: Easing.InOutQuad
+                  }
+                }
+              }
             }
           }
         }

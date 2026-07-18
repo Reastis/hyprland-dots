@@ -1,91 +1,44 @@
 import QtQuick
-import QtQuick.Layouts
 import Quickshell
+import Quickshell.Wayland
+import Quickshell.Hyprland
 import qs.services
-Scope {
-  id: bar
-  // property string test: SystemInfo.kbLayout
-  PanelWindow {
-    id: root
-    implicitHeight: 32
-    mask: Region {
-      item: barContent
-    }
-    margins {
-      top: 3
-      left: 3
-      right: 3
-    }
-    anchors {
-      left: true
-      top: true
-      right: true
-    }
-    color: "transparent"
-    Item {
-      id: barContent
-      implicitHeight: root.implicitHeight
-      height: 30
-      anchors {
-        left: parent.left
-        top: parent.top
-        right: parent.right
-      }
-      Rectangle {
-        id: barBackground
-        anchors {
-          fill: parent
-        }
-        color: "transparent"
-        radius: 12
-      }
-      RowLayout {
-        id: barSectionLeft
-        implicitHeight: barContent.implicitHeight
-        anchors {
-          left: parent.left
-          top: parent.top
-          bottom: parent.bottom
-        }
-        spacing: 4
-        BarGroup {
-          Workspaces {}
-        }
-      }
-      RowLayout {
-        id: barSectionCenter
-        implicitHeight: barContent.implicitHeight
-        anchors {
-          horizontalCenter: parent.horizontalCenter
-          top: parent.top
-          bottom: parent.bottom
-        }
-        BarGroup {
-          Clock {}
-        }
-      }
-      RowLayout {
-        id: barSectionRight
-        implicitHeight:barContent.implicitHeight
-        anchors {
-          right: parent.right
-          top: parent.top
-          bottom: parent.bottom
-        }
-        spacing:4
-        BarGroup {
-          SysTrayIndicator{}
-        }
-        BarGroup {
-          BatteryIndicator{}
-        }
-        BarGroup {
-          VolumeIndicator{}
-          LanguageIndicator{}
-          BluetoothIndicator{}
-          NetworkIndicator{}
-        }
-      }
-    }
+import qs.common
+
+PanelWindow {
+  id: root
+
+  color: "transparent"
+  exclusionMode: ExclusionMode.Ignore
+  WlrLayershell.layer: WlrLayer.Top
+
+  property var configSettings: Settings.config.barSettings
+  property ShellScreen mainWindow: this.screen
+
+  property string anchor: configSettings.anchor
+  property string barOrientation: anchor === "top" || anchor === "bottom"? "horizontal" : "vertical"
+  property bool barIsHorizontal: barOrientation === "horizontal"
+
+
+
+  implicitHeight: barOrientation === "horizontal"? configSettings.barSizeHorizontal : mainWindow?.height
+  implicitWidth: barOrientation === "vertical"? configSettings.barSizeVertical : mainWindow?.width
+
+  anchors {
+    left: anchor === "right"? false : true
+    top: anchor === "bottom"? false : true
+    right: anchor === "left"? false : true
+    bottom: anchor === "top"? false : true
+  }
+  margins {
+    top: barIsHorizontal? configSettings.marginsHorizontal : Appearance.margins.marginM
+    bottom: barIsHorizontal? configSettings.marginsHorizontal : Appearance.margins.marginM
+    left: !barIsHorizontal? configSettings.marginsVertical : Appearance.margins.marginM
+    right: !barIsHorizontal? configSettings.marginsVertical : Appearance.margins.marginM
+  }
+
+  BarContent {
+    isHorizontal: root.barIsHorizontal
+    anchor: root.anchor
   }
 }

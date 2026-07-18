@@ -13,8 +13,9 @@ Scope {
     id: root
     WlrLayershell.namespace: "quickshell:notifications"
     WlrLayershell.layer: WlrLayer.Overlay
+    aboveWindows: true
     implicitWidth: 300
-    exclusiveZone:0
+    exclusiveZone: 0
     property real padding: 10
     color:"transparent"
     anchors {

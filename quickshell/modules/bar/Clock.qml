@@ -5,26 +5,28 @@ import QtQuick.Layouts
 
 Item {
   id: root
-  implicitWidth: content.implicitWidth
-
-  property bool showDate: true
-  
-  RowLayout {
-    id: content
+  width: componentLoader.item?.width
+  height: componentLoader.item?.height
+  property bool isHorizontal: true
+  Loader {
+    id: componentLoader
     anchors.centerIn: parent
+    sourceComponent: isHorizontal? clockHorizontal : clockVertical
+  }
+  Component {
+    id: clockHorizontal
     StyledText {
       id: localTime
-      text: DateTime.time
+      Layout.alignment: Qt.AlignCenter
+      text: Qt.formatDateTime(DateTime.rawDateTime, "hh:mm AP")
     }
+  }
+  Component {
+    id: clockVertical
     StyledText {
-      id: separator
-      enabled: showDate
-      text: "•"
-    }
-    StyledText {
-      id: localDate
-      enabled: showDate
-      text: DateTime.date
+      id: localTime
+      Layout.alignment: Qt.AlignCenter
+      text: Qt.formatDateTime(DateTime.rawDateTime, "hh\nmm\nAP")
     }
   }
 }

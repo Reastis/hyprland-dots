@@ -3,18 +3,10 @@ import QtQuick.Layouts
 import qs.services
 import qs.modules.widgets
 
-Item {
-  id: root
-  implicitWidth: content.implicitWidth
+StyledText {
   property string kbLayout: SystemInfo.kbLayout
-  RowLayout{
-    id: content
-    anchors.centerIn: parent
-    StyledText {
-      Layout.preferredWidth: 30
-      horizontalAlignment: Text.AlignHCenter
-      text: kbLayout
-      isBold: true
-    }
-  }
+  Layout.alignment: Qt.AlignCenter
+  horizontalAlignment: Text.AlignHCenter
+  text: kbLayout
+  isBold: true
 }

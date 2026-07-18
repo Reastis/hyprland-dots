@@ -3,6 +3,8 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Widgets
 import qs.modules.widgets
+import qs.services
+import qs.common
 
 Item {
   id: root
@@ -21,7 +23,7 @@ Item {
     anchors.left: parent.left
     width: parent.width
     height: contentColumnLayout.height + padding * 2
-    color: "#CF0F47"
+    color: Appearance.colorScheme.cSurface //"#CF0F47"
     radius: 10
   }
   ColumnLayout {
@@ -46,14 +48,16 @@ Item {
         IconImage {
           id: appIconImage
           implicitSize: 24
-          source: Quickshell.iconPath(icon, "image-missing")
+          source: Quickshell.iconPath(icon, "emblem-important")
+          backer.smooth: true
         }
         StyledText {
           id: summary
           Layout.preferredWidth: parent.width - appIconImage.implicitSize - contentMargins * 2
           height: parent.implicitHeight
-          fontPixelSize: 18
+          fontPointSize: 13
           fontFamily: "Roboto"
+          color: Appearance.colorScheme.cOnSurface
           text: notifObject?.summary ?? notifObject?.appName
           elide: Text.ElideRight
         }
@@ -65,7 +69,7 @@ Item {
       Layout.preferredHeight: content.height + 2 * contentMargins
       Rectangle {
         anchors.fill: parent
-        color: "#EA5B6F"
+        color: Appearance.colorScheme.cSurfaceContainer
         radius: background.radius - padding
       }
       StyledListView {
@@ -86,7 +90,7 @@ Item {
             property var notif: modelData
             width: parent.width
             fontFamily: "Roboto"
-            fontPixelSize: 16
+            fontPointSize: 12
             text: modelData.body
             wrapMode: Text.Wrap
             elide: Text.ElideRight

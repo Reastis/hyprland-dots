@@ -3,13 +3,15 @@ pragma Singleton
 import QtQuick
 import Quickshell
 import Quickshell.Services.UPower
+import qs.common
 
 Singleton {
   id: root
   property bool available: UPower.displayDevice.isLaptopBattery
   property bool isCharging: !UPower.onBattery
   property real percentage: UPower.displayDevice.percentage
-  property string symbolName: "battery_unknown"
+  property var icons: IconMap.tablerIcons
+  property string symbolName: "battery-vertical-off"
   onIsChargingChanged: getSymbolName()
   onPercentageChanged: getSymbolName()
   function getSymbolName() {
@@ -18,28 +20,22 @@ Singleton {
     switch (!isCharging)
     {
       case (false):
-        symbolName = "bolt";
+        symbolName = "plug-connected";
         break;
-      case(charge <= 15):
-        symbolName = "battery_alert";
+      case (charge <= 5):
+        symbolName = "battery-vertical-exclamation";
         break;
-      case (charge <= 30):
-        symbolName = "battery_2_bar";
+      case (charge <= 25):
+        symbolName = "battery-vertical-1";
         break;
-      case (charge <= 45):
-        symbolName = "battery_3_bar";
+      case (charge <= 50):
+        symbolName = "battery-vertical-2";
         break;
-      case (charge <= 60):
-        symbolName = "battery_4_bar";
+      case (charge <= 75):
+        symbolName = "battery-vertical-3";
         break;
-      case (charge <= 85):
-        symbolName = "battery_5_bar";
-        break;
-      case (charge <= 90):
-        symbolName = "battery_6_bar";
-        break;
-      case (charge > 90):
-        symbolName = "battery_full";
+      case (charge <= 100):
+        symbolName = "battery-vertical-4";
         break;
     }
     root.symbolName = symbolName;

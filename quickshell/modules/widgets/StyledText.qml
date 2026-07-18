@@ -1,18 +1,20 @@
 import QtQuick
+import qs.common
 
 Text {
-  renderType: Text.NativeRendering
-  height:15
+
+  property color fontColor: Appearance.colorScheme.cOnSurface
+  property string fontFamily: "Noto Sans Mono" //"Roboto Mono"
+  property real fontPointSize: Appearance.fonts.fontSizeM
+  property bool isBold: false
+
+  renderType: Text.QtRendering
   verticalAlignment: Text.AlignTop
   horizontalAlignment: Text.AlignLeft
-
-  property string fontFamily: "Roboto Mono"
-  property real fontPixelSize: 16
-  property bool isBold: false
+  color: fontColor
   font {
     family: fontFamily
     bold: isBold
-    pixelSize:fontPixelSize
+    pointSize: fontPointSize
   }
-  color: "white"
 }

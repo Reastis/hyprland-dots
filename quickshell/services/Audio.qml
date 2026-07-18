@@ -3,7 +3,7 @@ pragma Singleton
 import Quickshell.Services.Pipewire
 import Quickshell
 import QtQuick
-
+import qs.common
 
 
 Singleton {
@@ -16,22 +16,22 @@ Singleton {
     objects: [defaultAudioSource, defaultAudioSink]
   }
 
-  property PwNodeAudio audioProperties: defaultAudioSink?.audio
-  property string soundSymbolName: "volume_down"
+  property var audioProperties: defaultAudioSink?.audio
+  property string soundSymbolName: "volume-4"
   onAudioPropertiesChanged: updateMaterialSymbol ()
 
   function updateMaterialSymbol() {
-    soundSymbolName = audioProperties?.muted? "volume_off" : audioProperties?.volume? "volume_up" : "volume_off"
+    soundSymbolName = audioProperties.muted? "volume-3" : audioProperties.volume? "volume" : "volume-3"
   }
   Connections {
     target: audioProperties ?? null
     
     function onMutedChanged() {
-      soundSymbolName = audioProperties?.muted ? "volume_off" :
-      !audioProperties.volume ? "volume_off":"volume_up"
+      soundSymbolName = audioProperties.muted? "volume-3" :
+      !audioProperties.volume? "volume-3" : "volume"
     }
     function onVolumeChanged() {
-      soundSymbolName = !audioProperties?.volume? "volume_off" : "volume_up"
+      soundSymbolName = !audioProperties.volume? "volume-3" : "volume"
     }
   }
 }

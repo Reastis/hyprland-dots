@@ -12,20 +12,20 @@ Singleton {
   property var devices: Bluetooth.devices
   property bool searching: Bluetooth.adapters.values.some(adapter => adapter.discovering)
   property bool connected: devices.values.some(device => device.connected)
-  property string symbolName: "bluetooth_disabled"
+  property string symbolName: "bluetooth-off"
   onEnabledChanged: getSymbolName()
   onConnectedChanged: getSymbolName()
   onSearchingChanged: getSymbolName()
   function getSymbolName() {
     switch (enabled) {
       case (false):
-        symbolName = "bluetooth_disabled";
+        symbolName = "bluetooth-off";
         break;
       case (searching):
-        symbolName = "bluetooth_searching";
+        symbolName = "bluetooth";
         break;
       case (connected):
-        symbolName = "bluetooth_connected";
+        symbolName = "bluetooth-connected";
         break;
       case (true):
         symbolName = "bluetooth";

@@ -10,18 +10,16 @@ Singleton {
   property bool ethernet: false
   property bool wifi: false
   property string networkName: ""
-  property string symbolName: "signal_wifi_statusbar_not_connected"
+  property string symbolName: "network-off"
   property int networkStrength
   property int reloadInterval: 1000
 
   function updateSymbolName() {
-    symbolName = !isConnected? "signal_wifi_statusbar_not_connected" :
-      ethernet? "lan" :
-      wifi? networkStrength >= 75? "signal_wifi_4_bar" :
-      networkStrength >= 50? "network_wifi_3_bar" :
-      networkStrength >= 25? "network_wifi_2_bar" :
-      networkStrength != 0? "network_wifi_1_bar": "signal_wifi_0_bar" :
-      "cell_tower"
+    symbolName = !isConnected? "network-off" :
+      ethernet? "network" :
+      wifi? networkStrength >= 75? "wifi" :
+      networkStrength >= 50? "wifi-2" :
+      networkStrength >= 25? "wifi-1" : "wifi-0" : "antenna-off"
   }
 
   Timer {
